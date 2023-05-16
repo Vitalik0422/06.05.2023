@@ -11,20 +11,34 @@ router.get('/', (req,res) => {
     res.render('index')
 })
 
-router.post('/data', upload.none(), (req,res) => {
+router.post('/write', upload.none(), async (req,res) => {
     console.log(req.body);
-    test(req.body)
+    //validTest(req.body);
 })
 
-const test = async (data) => {
-    const valid = await validate(data)
-    console.log('valid',valid)
-    await client.connect()
-    console.log('done');
-    const users = client.db().collection('users')
-    console.log('done');
+router.post('/mongo', async (req,res)=> {
+    const data = await hi();
     console.log(data);
-    const user = await users.insertOne({data})
+    res.json(data);
+})
+
+
+const hi = async () => {
+    await client.connect()
+    const users = client.db().collection('users')
+    const data = await users.find().toArray()
+    return data;
+}
+
+const validTest = async (data) => {
+    const valid = await validate(data) ? write(data) : console.log("error");
 }   
+
+const write = async (data) => {
+    log
+    await client.connect()
+    const users = client.db().collection('users')
+    const user = await users.insertOne({data})
+}
 
 module.exports = router;
